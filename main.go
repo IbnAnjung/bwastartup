@@ -44,7 +44,8 @@ func main() {
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
-	router.Run("127.0.0.1:8081")
+	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
+	router.Run("127.0.0.1:8080")
 
 }
 
