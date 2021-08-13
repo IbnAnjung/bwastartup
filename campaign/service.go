@@ -1,6 +1,7 @@
 package campaign
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/gosimple/slug"
@@ -10,6 +11,7 @@ type Service interface {
 	FindCampaigns(userID int) ([]Campaign, error)
 	GetCampaignByID(input GetCampaignDetailInput) (Campaign, error)
 	CreateCampaign(input CreateCampaignInput) (Campaign, error)
+	UpdateCampaign(inputGetCampaign GetCampaignDetailInput, inputData CreateCampaignInput) (Campaign, error)
 }
 
 type service struct {
@@ -67,4 +69,32 @@ func (s *service) CreateCampaign(input CreateCampaignInput) (Campaign, error) {
 	}
 
 	return newCampaign, nil
+}
+
+func (s *service) UpdateCampaign(inputGetCampaign GetCampaignDetailInput, inputData CreateCampaignInput) (Campaign, error) {
+	campaign, err := s.repository.FindByID(inputGetCampaign.ID)
+	if err != nil {
+		return campaign, err
+	}
+
+	if inputData.User.ID != campaign.UserID {
+		return campaign, errors.New("You dont have any access to update this campaign")
+	}
+
+	campaign.Name = inputData.Name
+	campaign.ShortDescription = inputData.ShortDescription
+	campaign.Description = inputData.Description
+	campaign.GoalAmount = inputData.GoalAmount
+	campaign.Perks = inputData.Perks
+	campaign.Name = inputData.Name
+	campaign.UserID = inputData.User.ID
+
+	updatedCampaign, err := s.repository.Update(campaign)
+
+	if err != nil {
+		return updatedCampaign, err
+	}
+
+	return updatedCampaign, nil
+
 }
