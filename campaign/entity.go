@@ -29,4 +29,5 @@ type CampaignImage struct {
 	IsPrimary  int
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	Campaign   Campaign
 }
