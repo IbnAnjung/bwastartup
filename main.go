@@ -48,6 +48,7 @@ func main() {
 
 	api.Static("images", "./images")
 	api.POST("/users", userHandler.RegisterUser)
+	api.GET("/users/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmail)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
